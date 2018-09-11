@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { Wrapper, Title, Form, Input, ErrorMessage, Button } from './ChatLogin.styled';
 
 class ChatLogin extends Component {
@@ -47,7 +47,6 @@ class ChatLogin extends Component {
     ) {
       event.preventDefault();
     }
-    
   }
 
   checkCodeInputCorrectness = (event) => {
@@ -71,10 +70,7 @@ class ChatLogin extends Component {
                       : '+' + phoneNumber} 
             onChange={this.handleInputChange(phoneSubmitted)}
             onKeyDown={this.checkPhoneInputCorrectness}>
-              
           </Input>
-          
-
           {
             isPhoneNumberInvalid
               ? <ErrorMessage>Invalid phone number</ErrorMessage>
@@ -89,9 +85,7 @@ class ChatLogin extends Component {
           }
           <Button onClick={this.handleSubmitClick(phoneSubmitted)}>Submit</Button>
         </Form>
-
-        
-      </Wrapper>          
+      </Wrapper>         
     )
   }
 }
