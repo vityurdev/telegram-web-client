@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "eslint": "^5.5.0",
     "mtproto-storage-browser": "^0.1.5",
     "prop-types": "^15.6.2",
     "react": "^16.5.0",

@@ -16,13 +16,13 @@ const ChatWindow = styled.section`
 `;
 
 class Chat extends Component {
-  render() {
-    return (
-      <ChatWindow>
-        <ChatLogin />
-      </ChatWindow>
-    )
-  }
-};
+	render() {
+		return (
+			<ChatWindow>
+				<ChatLogin />
+			</ChatWindow>
+		);
+	}
+}
 
 export default Chat;

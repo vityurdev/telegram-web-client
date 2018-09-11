@@ -1,113 +1,96 @@
 import React, { Component } from 'react';
-import styled from 'styled-components';
-
-export const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  
-  height: 100%;
-  width: 100%;
-  
-  
-`;
-
-export const Title = styled.h1`
-  margin-top: 150px;
-  margin-bottom: 150px;
-`;
-
-export const Form = styled.section`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-export const Input = styled.input`
-  padding: 20px;
-  border-radius: 300px;
-  border: 1px solid lightgray;
-  box-sizing: content-box;
-  margin: 5px 0;
-  
-  font-family: "Segoe UI", sans-serif;
-
-  &:focus {
-    outline: none;
-    border-color: fuchsia;
-    border-width: 1px;
-    transition: border ease 0.3s;
-  }
-`;
-
-export const Button = styled.button`
-  padding: 10px 20px;
-  width: fit-content;
-  background: pink;
-  border: none;
-  border-radius: 300px;
-
-
-  &:focus {
-    outline: none;
-  }
-
-  &:hover {
-    cursor: pointer;
-  }
-`;
+import { Wrapper, Title, Form, Input, ErrorMessage, Button } from './ChatLogin.styled';
 
 class ChatLogin extends Component {
   state = {
-    phoneNumber: '+',
+    phoneNumber: '',
     phoneSubmitted: false,
-    phoneCode: null
+    phoneCode: null,
+    isPhoneNumberInvalid: false,
   }
 
   handleSubmitClick = (phoneSubmitted) => () => {
+    if (this.state.phoneNumber === '' || this.state.phoneNumber === '1') {
+      return this.setState({ isPhoneNumberInvalid: true });
+    } 
+
     if (phoneSubmitted) {
-      
+      // sign in
+      console.log("'auth.signIn' request sent")
     } else {
+      // sendCode
       this.setState({ phoneSubmitted: true })
     }
   }
 
   handleInputChange = (phoneSubmitted) => (event) => {
-    
     if (phoneSubmitted) {
-      
+      this.setState({ phoneCode: event.target.value })
     } else {
-      this.setState({ phoneNumber: event.target.value });
+      this.setState({ phoneNumber: event.target.value.charAt(0) === '+'
+        ? event.target.value.substring(1)
+        : event.target.value.substring(2) });
     }
   }
 
   checkPhoneInputCorrectness = (event) => {
-    if (event.target.value === '+' && event.keyCode === 8 
-          || event.target.value.length === 13 && event.keyCode !== 8 
-          || ((event.keyCode < 48 || event.keyCode > 57) && event.keyCode !== 8))  {
+    // 1. Disable removing '+' at the start
+    // 2. Disable entering anything but backspace when phone number is of max correct length (15 digits)
+    // 3. Disable alphabetic input (only digits and side arrows are allowed)
+    if (this.state.isPhoneNumberInvalid) {
+      this.setState({ isPhoneNumberInvalid: false})
+    }
+    
+    if ((event.target.value === '+' && event.keyCode === 8 
+          || event.target.value.length === 16 && ![8, 37, 39].includes(event.keyCode)
+          || (((event.keyCode < 48 || event.keyCode > 57)) && ![8, 37, 39].includes(event.keyCode)))          
+    ) {
+      event.preventDefault();
+    }
+    
+  }
+
+  checkCodeInputCorrectness = (event) => {
+    // Disable alphabetic input (only digits and side arrows are allowed)
+
+    if ((event.keyCode < 48 || event.keyCode > 57) && ![8, 37, 39].includes(event.keyCode)) {
       event.preventDefault();
     }
   }
 
   render() {
-    const { phoneNumber, phoneSubmitted } = this.state;
+    const { phoneNumber, phoneSubmitted, phoneCode, isPhoneNumberInvalid } = this.state;
 
     return (
       <Wrapper>
         <Title>Telegram VY</Title>
         <Form style={{ display: 'flex', flexDirection: 'column'}}>
-          <Input placeholder="Enter phone number" value={phoneNumber}
+          <Input disabled={phoneSubmitted} placeholder="Enter phone number" 
+            value={ phoneNumber.charAt(0) === '+'
+                      ? phoneNumber 
+                      : '+' + phoneNumber} 
             onChange={this.handleInputChange(phoneSubmitted)}
-            onKeyDown={this.checkPhoneInputCorrectness}></Input>
+            onKeyDown={this.checkPhoneInputCorrectness}>
+              
+          </Input>
+          
+
+          {
+            isPhoneNumberInvalid
+              ? <ErrorMessage>Invalid phone number</ErrorMessage>
+              : null
+          }
           {
             phoneSubmitted 
-              ? <Input placeholder="Enter code"></Input>
+              ? <Input placeholder="Enter code" value={phoneCode}
+                  onChange={this.handleInputChange(phoneSubmitted)}
+                  onKeyDown={this.checkCodeInputCorrectness}></Input>
               : null
           }
           <Button onClick={this.handleSubmitClick(phoneSubmitted)}>Submit</Button>
         </Form>
 
-        <input type="text" /> 
+        
       </Wrapper>          
     )
   }
