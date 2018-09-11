@@ -45,7 +45,11 @@ class TelegramAPIService {
 		});
 
 		return user;
-	}
+  }
+  
+  async logOut() {
+    const isLogOutSuccessful = await this.client('auth.logOut');
+  }
 }
 
 const telegramAPIService = new TelegramAPIService();
