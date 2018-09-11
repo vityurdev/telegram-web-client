@@ -1,4 +1,3 @@
-import { Component } from 'react';
 import React, { Component } from 'react';
 import { ChatWindow } from './Chat.styled';
 import ChatLogin from './../ChatLogin';

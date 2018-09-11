@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { Wrapper, Title, Form, Input, ErrorMessage, Button } from './ChatLogin.styled';
 
 class ChatLogin extends Component {
