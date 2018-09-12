@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { ChatWindow } from './Chat.styled';
 import ChatLogin from './../ChatLogin';
+import Spinner from "./../Spinner";
 
 class Chat extends Component {
   render() {
 	  return (
 		  <ChatWindow>
-			  <ChatLogin />
+        <ChatLogin />
 		  </ChatWindow>
 	  );
   }
