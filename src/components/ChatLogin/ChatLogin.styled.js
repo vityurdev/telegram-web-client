@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, {css} from 'styled-components';
 
 export const Wrapper = styled.div`
   display: flex;
@@ -60,6 +60,12 @@ export const Button = styled.button`
 
   &:hover {
     cursor: pointer;
+  }
+
+  ${props => props.disabled && css`
+    color: gray;
+  `};
+  
   }
 `;
 

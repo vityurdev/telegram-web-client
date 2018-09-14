@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Wrapper, Title, Form, Input, ErrorMessage, Button } from './ChatLogin.styled';
+import telegramAPI from "./../../services/TelegramAPIService";
 
 class ChatLogin extends Component {
   state = {
@@ -7,19 +8,39 @@ class ChatLogin extends Component {
     phoneSubmitted: false,
     phoneCode: null,
     isPhoneNumberInvalid: false,
+    phoneCodeHash: '',
+    isRequestPending: false
   }
 
-  handleSubmitClick = (phoneSubmitted) => () => {
-    if (this.state.phoneNumber === '' || this.state.phoneNumber === '1') {
-      return this.setState({ isPhoneNumberInvalid: true });
-    } 
+  handleSubmitClick = (phoneSubmitted) => async () => {
+    const { phoneNumber, phoneCode, phoneCodeHash } = this.state;
+    const { navigateToChatList } = this.props;
+
+    this.setState({ isRequestPending: true})
 
     if (phoneSubmitted) {
-      // sign in
-      console.log("'auth.signIn' request sent")
+      try {
+        const user = await telegramAPI.signIn(phoneNumber, phoneCode, phoneCodeHash);
+        console.log(user);
+        navigateToChatList();
+      } catch (e) {
+        console.log(e);
+      } finally {
+        this.setState({ isRequestPending: false });
+      }
     } else {
-      // sendCode
-      this.setState({ phoneSubmitted: true })
+      try {
+        const phoneCodeHash = await telegramAPI.sendAuthCode(this.state.phoneNumber);
+        console.log(phoneCodeHash);
+        this.setState({ phoneCodeHash });
+        this.setState({ phoneSubmitted: true });
+      } catch (e) {
+        console.log(e);
+        this.setState({ isPhoneNumberInvalid: true });
+      } finally {
+        this.setState({ isRequestPending: false })
+      }
+      
     }
   }
 
@@ -58,7 +79,7 @@ class ChatLogin extends Component {
   }
 
   render() {
-    const { phoneNumber, phoneSubmitted, phoneCode, isPhoneNumberInvalid } = this.state;
+    const { phoneNumber, phoneSubmitted, phoneCode, isPhoneNumberInvalid, isRequestPending } = this.state;
 
     return (
       <Wrapper>
@@ -83,7 +104,7 @@ class ChatLogin extends Component {
                   onKeyDown={this.checkCodeInputCorrectness}></Input>
               : null
           }
-          <Button onClick={this.handleSubmitClick(phoneSubmitted)}>Submit</Button>
+          <Button disabled={isRequestPending} onClick={this.handleSubmitClick(phoneSubmitted)}>Submit</Button>
         </Form>
       </Wrapper>         
     )

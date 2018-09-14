@@ -10,7 +10,7 @@ const api = {
 	layer: 57,
 	invokeWithLayer: 0xda9b0d0d,
 	initConnection: 0x69796de9,
-	api_id: config.id,
+	api_id: config.api_id,
 };
 
 const server = {
@@ -49,6 +49,7 @@ class TelegramAPIService {
   
   async logOut() {
     const isLogOutSuccessful = await this.client('auth.logOut');
+    return isLogOutSuccessful;
   }
 }
 
