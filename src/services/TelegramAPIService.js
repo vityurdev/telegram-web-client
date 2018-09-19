@@ -51,6 +51,53 @@ class TelegramAPIService {
     const isLogOutSuccessful = await this.client('auth.logOut');
     return isLogOutSuccessful;
   }
+
+  async getDialogs() {
+    const dialogs = await this.client('messages.getDialogs', {
+      limit: 20
+    });
+
+    return dialogs;
+  }
+
+  async getHistory(userId, accessHash) {
+    const { messages } = await this.client('messages.getHistory', {
+      peer: {
+        _: 'inputPeerUser',
+        user_id: userId,
+        access_hash: accessHash
+      },
+      limit: 20
+    });
+
+    return messages;
+  }
+
+  async sendMessage(userId, accessHash, message, messageId) {
+    const sentMessage = await this.client('messages.sendMessage', {
+      peer: {
+        _: 'inputPeerUser',
+        user_id: userId,
+        access_hash: accessHash
+      },
+      message,
+      random_id: messageId
+    });
+
+    return sentMessage;
+  }
+
+  async readHistory(userId, accessHash) {
+    const readMark = await this.client('messages.readHistory', {
+      peer: {
+        _: 'inputPeerUser',
+        user_id: userId,
+        access_hash: accessHash
+      }, 
+    });
+
+    return readMark;
+  }
 }
 
 const telegramAPIService = new TelegramAPIService();
